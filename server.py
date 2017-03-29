@@ -46,7 +46,6 @@ def action(pkt):
 
 def packet_builder(data):
 	packet = Ether() / IP(dst=source) / ICMP(type=0) / (XOR(server_magic + data))
-	#packet.type = 0
 	return packet
 
 def XOR(p):
