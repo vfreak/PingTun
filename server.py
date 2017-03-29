@@ -56,6 +56,7 @@ def XOR(p):
         return buff
 
 def command_shell(data):
+	value = ""
 	proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, 
 	stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 	value = proc.stdout.read() + proc.stderr.read()
