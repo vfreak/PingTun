@@ -32,6 +32,7 @@ def menu():
 		ip = raw_input("[PingTun] Enter IP to scan: ")
 		port_scan(ip)
 	elif choice == "3":
+		print "[PingTun] Dropping in shell..."
 		command_shell()
 	elif choice == "4":
 		print "[PingTun] Exiting..."
@@ -73,7 +74,7 @@ def port_scan(ip):
 
 def command_shell():
 	sendp(packet_builder(shell), verbose=0, iface=sys.argv[2])
-	sniff(iface=sys.argv[2],filter="icmp",prn=action)
+	sniff(iface=sys.argv[2],filter="icmp",prn=action,store=1)
         menu()
 
 menu()

