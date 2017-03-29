@@ -40,6 +40,7 @@ def menu():
 		print "[PingTun] Invalid option, please pick a valid number."
 	
 def action(pkt):
+	buff = ""
 	buff = XOR(pkt.load)
         if buff[0:4] == server_magic:
 		if buff[4:8] == ping:
