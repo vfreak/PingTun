@@ -47,6 +47,7 @@ def action(pkt):
 				print "Sending reply"
 
 def packet_builder(data):
+	print source
 	packet = Ether() / IP(dst=source) / ICMP(type=0) / (XOR(server_magic + data))
 	return packet
 
