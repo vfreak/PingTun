@@ -42,7 +42,7 @@ def action(pkt):
 			elif buff[4:8] == port:
 				print "Port"
 			elif buff[4:8] == shell:
-				time.sleep(0.1)
+				time.sleep(1)
 				command_shell(buff[8:])
 
 def packet_builder(data):

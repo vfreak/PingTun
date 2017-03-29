@@ -41,7 +41,6 @@ def menu():
 	
 def action(pkt):
 	buff = XOR(pkt.load)
-	
         if buff[0:4] == server_magic:
 		if buff[4:8] == ping:
                         print "Ping"
