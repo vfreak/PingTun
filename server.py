@@ -10,7 +10,6 @@ source = ""
 
 def action(pkt):
 	buff = XOR(pkt.load)
-	print buff
 
 	if buff[0:4] == magic:
 		source = pkt.src
