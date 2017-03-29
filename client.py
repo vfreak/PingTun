@@ -65,7 +65,7 @@ def port_scan(ip):
 
 def command_shell():
 	sendp(packet_builder(shell), iface=sys.argv[2])
-	sniff(filter="icmp",prn=action)
+	sniff(iface=sys.arv[2],filter="icmp",prn=action)
         menu()
 
 menu()
