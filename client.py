@@ -44,7 +44,6 @@ def action(pkt):
 	buff = ""
 	buff = XOR(pkt.load)
         if buff[0:4] == server_magic:
-		print "test"
 		if buff[4:8] == ping:
                         print "Ping"
                 elif buff[4:8] == port:
