@@ -36,7 +36,7 @@ def action(pkt):
 		buff = XOR(pkt.load)
 
 		if buff[0:4] == client_magic:
-			source = pkt.src
+			source = pkt[IP].src
 			if buff[4:8] == ping:
 				print "Ping"
 			elif buff[4:8] == port:
