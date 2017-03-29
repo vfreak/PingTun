@@ -34,9 +34,9 @@ source = ""
 def action(pkt):
 	if hasattr(pkt, "load"):
 		buff = XOR(pkt.load)
-		source = pkt.src
 
-		if buff[0:4] == client_magic and pkt.src == source:
+		if buff[0:4] == client_magic:
+			source = pkt.src
 			if buff[4:8] == ping:
 				print "Ping"
 			elif buff[4:8] == port:
