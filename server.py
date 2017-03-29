@@ -32,7 +32,7 @@ shell = "\xca\xcb\xcc\xcd"
 source = ""
 
 def action(pkt):
-	if pkt.load:
+	if hasattr(pkt, "load"):
 		buff = XOR(pkt.load)
 
 		if buff[0:4] == client_magic:
